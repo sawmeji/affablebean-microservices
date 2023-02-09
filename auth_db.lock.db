@@ -1,4 +1,6 @@
 #FileLock
-#Thu Feb 09 05:23:01 UTC 2023
-id=18634a0881721a9c698582be2e1db2f51ae87eb480c
+#Thu Feb 09 14:51:57 MMT 2023
+server=192.168.56.1\:53681
+hostName=LAPTOP-R29LNH9I
 method=file
+id=18635445aa700af0bf280b3023cb0fc73e4c028c88e

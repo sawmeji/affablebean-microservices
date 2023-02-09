@@ -1,10 +1,16 @@
 package com.example.apisecurity.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Getter;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.Date;
 
 public class Jwt {
 
@@ -21,8 +27,21 @@ public class Jwt {
                          Long validInMinutes,
                          String securityKey){
         var issueDate = Instant.now();
-        var expiration = issueDate.plus(validInMinutes, ChronoUnit.SECONDS);
-
+        var expiration = issueDate.plus(validInMinutes, ChronoUnit.MINUTES);
+return new Jwt(
+        Jwts.builder()
+                .claim("user_id", userId)
+                .setIssuedAt(Date.from(issueDate))
+                .setExpiration(Date.from(expiration))
+                .signWith(SignatureAlgorithm.HS256,
+                        Base64.getEncoder().encodeToString(
+                                securityKey.getBytes(StandardCharsets.UTF_8)
+                        ))
+                .compact(),
+        userId,
+        LocalDateTime.ofInstant(issueDate, ZoneId.systemDefault()),
+        LocalDateTime.ofInstant(expiration, ZoneId.systemDefault())
+);
     }
 
     private Jwt(String token, Long userId, LocalDateTime issuedAt, LocalDateTime expiredAt) {

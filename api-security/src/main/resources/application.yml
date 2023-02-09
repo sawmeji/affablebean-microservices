@@ -14,4 +14,11 @@ spring:
       platform: h2
       mode: always
 
+secret:
+  access-token:
+    key: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NTkyODM3NiwiaWF0IjoxNjc1OTI4Mzc2fQ.NMrIchJCoepgEfSpTmwUrFEg2tIKzTWIL5-ZzIyThLs
+  refresh-token:
+    key: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NTkyODM3NiwiaWF0IjoxNjc1OTI4Mzc2fQ.NMrIchJCoepgEfSpTmwUrFEg2tIKzTWIL5-ZzIyThLs
+
+
 

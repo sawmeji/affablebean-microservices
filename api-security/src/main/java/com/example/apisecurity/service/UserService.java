@@ -2,8 +2,10 @@ package com.example.apisecurity.service;
 
 import com.example.apisecurity.data.User;
 import com.example.apisecurity.data.UserDao;
+import com.example.apisecurity.exception.InvalidCredentialError;
 import com.example.apisecurity.exception.PasswordNotMatchError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,30 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+/*    @Value("${secret.key}")
+    private String secretKey;*/
+    @Value("${secret.access-token.key}")
+    private String accessSecret;
+
+    @Value("${secret.refresh-token.key}")
+    private String refreshSecret;
+
+    public Login login(String email, String password){
+        var user = userDao.findUserByEmail(email)
+                .orElseThrow(InvalidCredentialError::new);
+        if(!passwordEncoder.matches(password,user.getPassword())){
+            throw new InvalidCredentialError();
+        }
+        /*return Jwt.of(user.getId(), 1L, secretKey);*/
+        return Login.of(user.getId(), accessSecret, refreshSecret);
+    }
+
     public User register(String firstName,
                          String lastName,
                          String email,
                          String password,
                          String confirmPassword){
-        if(!passwordEncoder.matches(password,confirmPassword)){
+        if(!Objects.equals(password,confirmPassword)){
             throw new PasswordNotMatchError();
         }
 
