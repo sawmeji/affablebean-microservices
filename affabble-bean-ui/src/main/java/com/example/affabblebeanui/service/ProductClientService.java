@@ -20,7 +20,7 @@ public class ProductClientService {
     @PostConstruct
     public void init(){
         ResponseEntity<Products> response =template
-                .getForEntity("http://localhost:8080/backend/products"
+                .getForEntity("http://localhost:8099/backend/products"
                         , Products.class);
         if (response.getStatusCode().is2xxSuccessful()){
             this.products=
