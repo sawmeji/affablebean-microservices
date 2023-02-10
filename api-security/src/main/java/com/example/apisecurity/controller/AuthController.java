@@ -72,6 +72,16 @@ public class AuthController {
         );
     }
 
+    record ForgetRequest(String email){}
+    record ForgetResponse(String message){}
+    @PostMapping("/forgot")
+    public ForgetResponse forget(@RequestBody ForgetRequest forgetRequest, HttpServletRequest request){
+        var originUrl = request.getHeader("Origin");
+        userService.forgot(forgetRequest.email, originUrl);
+        return new ForgetResponse("Successfully forgot Password!");
+
+    }
+
     record UserResponse(Long id,
                         @JsonProperty("first_name") String firstName,
                         @JsonProperty("last_name") String lastName,
@@ -102,6 +112,7 @@ public class AuthController {
     @PostMapping("/logout")
     public LogoutResponse logout(@CookieValue("refresh_token")String refreshToken,
                                  HttpServletResponse response){
+        userService.logout(refreshToken);
         Cookie cookie = new Cookie("refresh_token", null);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
