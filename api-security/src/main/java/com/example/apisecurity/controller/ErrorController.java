@@ -1,7 +1,9 @@
 package com.example.apisecurity.controller;
 
 import com.example.apisecurity.exception.InvalidCredentialError;
+import com.example.apisecurity.exception.NoBearerToken;
 import com.example.apisecurity.exception.PasswordNotMatchError;
+import com.example.apisecurity.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @ControllerAdvice
 public class ErrorController {
 
-    @ExceptionHandler({PasswordNotMatchError.class, InvalidCredentialError.class})
+    @ExceptionHandler({PasswordNotMatchError.class,
+                        InvalidCredentialError.class,
+                        NoBearerToken.class,
+                        UserNotFoundException.class})
     public ResponseEntity habdleException(Throwable throwable) throws  Throwable{
         if(throwable instanceof PasswordNotMatchError){
             return ResponseEntity
@@ -22,6 +27,14 @@ public class ErrorController {
             return ResponseEntity
                     .status(401)
                     .body("Invalid Credentials!");
+        } else if (throwable instanceof NoBearerToken) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("No Bearer Token!");
+        } else if (throwable instanceof UserNotFoundException) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User Not Found From Token!");
         }
         return null;
     }

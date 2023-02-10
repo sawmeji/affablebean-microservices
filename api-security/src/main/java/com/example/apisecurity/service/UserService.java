@@ -4,8 +4,10 @@ import com.example.apisecurity.data.User;
 import com.example.apisecurity.data.UserDao;
 import com.example.apisecurity.exception.InvalidCredentialError;
 import com.example.apisecurity.exception.PasswordNotMatchError;
+import com.example.apisecurity.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,11 @@ public class UserService {
 
     @Value("${secret.refresh-token.key}")
     private String refreshSecret;
+
+    public User getUserFromToken(String token){
+        return userDao.findById(Jwt.from(token, accessSecret).getUserId())
+                .orElseThrow(UserNotFoundException::new);
+    }
 
     public Login login(String email, String password){
         var user = userDao.findUserByEmail(email)
