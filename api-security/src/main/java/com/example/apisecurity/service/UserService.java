@@ -1,9 +1,11 @@
 package com.example.apisecurity.service;
 
+import com.example.apisecurity.data.Token;
 import com.example.apisecurity.data.User;
 import com.example.apisecurity.data.UserDao;
 import com.example.apisecurity.exception.InvalidCredentialError;
 import com.example.apisecurity.exception.PasswordNotMatchError;
+import com.example.apisecurity.exception.UnAuthenticatedError;
 import com.example.apisecurity.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +31,19 @@ public class UserService {
     @Value("${secret.refresh-token.key}")
     private String refreshSecret;
 
+    public Login refreshAccess(String refreshToken){
+        var refreshJwt = Jwt.from(refreshToken, refreshSecret);
+
+
+/*        var user = userDao.findByIdAndTokensRefreshToken(
+                refreshJwt.getUserId(),
+                refreshToken,
+                refreshJwt.getExpiredAt())
+                .orElseThrow(UnAuthenticatedError::new);*/
+
+        return Login.of(refreshJwt.getUserId(), accessSecret, refreshSecret);
+    }
+
     public User getUserFromToken(String token){
         return userDao.findById(Jwt.from(token, accessSecret).getUserId())
                 .orElseThrow(UserNotFoundException::new);
@@ -41,7 +56,17 @@ public class UserService {
             throw new InvalidCredentialError();
         }
         /*return Jwt.of(user.getId(), 1L, secretKey);*/
-        return Login.of(user.getId(), accessSecret, refreshSecret);
+        var login =  Login.of(user.getId(), accessSecret, refreshSecret);
+        var refreshToken = login.getRefreshToken();
+
+        user.addToken(new Token(
+                refreshToken.getToken(),
+                refreshToken.getIssuedAt(),
+                refreshToken.getExpiredAt()
+        ));
+        userDao.save(user);
+
+        return login;
     }
 
     public User register(String firstName,
