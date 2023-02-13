@@ -1,3 +1,4 @@
+
 server:
   port: 8070
   error:
@@ -13,12 +14,20 @@ spring:
     init:
       platform: h2
       mode: always
-
+  mail:
+    host: 0.0.0.0
+    port: 1025
+  application:
+    name: api-security
 secret:
   access-token:
     key: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NTkyODM3NiwiaWF0IjoxNjc1OTI4Mzc2fQ.NMrIchJCoepgEfSpTmwUrFEg2tIKzTWIL5-ZzIyThLs
   refresh-token:
     key: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY3NTkyODM3NiwiaWF0IjoxNjc1OTI4Mzc2fQ.NMrIchJCoepgEfSpTmwUrFEg2tIKzTWIL5-ZzIyThLs
 
+application:
+  frontend:
+    default:
+      url: http://localhost:8070
 
 

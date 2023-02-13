@@ -3,6 +3,7 @@ package com.example.apisecurity.controller;
 import com.example.apisecurity.data.User;
 import com.example.apisecurity.service.UserService;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,6 +50,15 @@ public class AuthController {
         response.addCookie(cookie);
 
         return new LoginResponse(login.getAccessToken().getToken());
+    }
+    record ResetRequest(
+            String token, String password, @JsonProperty("password_confirm") String passwordConfirm
+    ){}
+    record ResetResponse(String message){}
+    @PostMapping("/reset")
+    public ResetResponse reset(@RequestBody ResetRequest request){
+        userService.reset(request.token(), request.password(), request.passwordConfirm());
+        return new ResetResponse("Success Reset Password!");
     }
 
 /*
