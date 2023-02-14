@@ -8,6 +8,7 @@ import com.example.paymentservice.exception.AccountNotFoundException;
 import com.example.paymentservice.exception.InsufficientAmountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -61,6 +62,7 @@ public class AccountService {
         return accountDao.saveAndFlush(account);
     }
 
+    @Transactional
     public void transfer(String fromName, String fromEmail, String toName, String toEmail, double amount) {
         Account fromAccount = withdraw(fromName,fromEmail,amount);
         deposit(toName,toEmail,amount);
