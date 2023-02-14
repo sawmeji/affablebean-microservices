@@ -3,10 +3,12 @@ package com.example.affabblebeanui.service;
 import com.example.affabblebeanui.dto.Product;
 import com.example.affabblebeanui.dto.Products;
 import com.example.affabblebeanui.exception.ProductNotFoundException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -49,5 +51,48 @@ public class ProductClientService {
         return this.products;
     }
 
+    record TransferRequest(
+            @JsonProperty("from_name") String fromName,
+            @JsonProperty("from_email") String fromEmail,
+            @JsonProperty("to_name") String toName,
+            @JsonProperty("to_email") String toEmail,
+            double amount
+    ){
+
+    }
+    public void checkout(String name, String email, double total) {
+        var request=new TransferRequest(
+                name,
+                email,
+                "william",
+                "william@gmail.com",
+                total
+        );
+        try {
+            ResponseEntity<String> response = template
+                    .postForEntity("http://localhost:8060/payment/transfer", request, String.class);
+
+            if(response.getStatusCode().is2xxSuccessful()){
+                System.out.println("Successfully checkout!");
+            }
+
+        }catch (HttpClientErrorException e){
+            String msg = String.format("%s and %s is not found in payment account!", email,name);
+            throw new IllegalArgumentException(msg);
+        }
+ /*       if(!response.getStatusCode().is2xxSuccessful()){
+            throw new IllegalArgumentException("Account Is Invalid!");
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            if(response.getStatusCode().is4xxClientError()){
+                throw new IllegalArgumentException("Account Not Found!");
+            }
+
+        }
+        else {
+            System.out.println("Successfully Checkout..............");
+        }*/
+
+    }
 
 }

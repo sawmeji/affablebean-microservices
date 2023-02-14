@@ -25,6 +25,19 @@ public class ProductController {
     @Autowired
     private ProductClientService productClientService;
 
+    @GetMapping("/checkout")
+    public String checkoutForm(){
+        return "checkout";
+
+    }
+    @PostMapping("/checkout")
+    public String checkoutProcess(@RequestParam("name")String name,
+                                  @RequestParam("email")String email,
+                                  @ModelAttribute("total")double total){
+        productClientService.checkout(name,email,total);
+        return "redirect:/webui/home";
+    }
+
     @GetMapping("/products")
     public String
     listProductByCategory(@RequestParam("category") String categoryName,
