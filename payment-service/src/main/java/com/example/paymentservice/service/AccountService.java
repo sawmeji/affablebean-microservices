@@ -19,7 +19,10 @@ public class AccountService {
     @Autowired
     private AccountDao accountDao;
 
-    private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
+
+//    private RestTemplate restTemplate = new RestTemplate();
 
 
     public Account deposit(String name, String email, double amount) {
